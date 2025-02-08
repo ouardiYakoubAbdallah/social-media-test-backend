@@ -52,7 +52,7 @@ class Follow(models.Model):
 
 
 class User(AbstractBaseUser, PermissionsMixin):
-    username = models.CharField(max_length=255)
+    username = models.CharField(max_length=255, unique=True, db_index=True)
     email = models.EmailField(validators=[validators.validate_email], unique=True, blank=False)
     registration_date = models.DateTimeField(auto_now_add=True)
     followers = models.ManyToManyField(
