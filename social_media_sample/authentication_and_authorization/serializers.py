@@ -15,6 +15,13 @@ class RegisterSerializer(serializers.ModelSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
+    posts = serializers.SerializerMethodField()
+
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'registration_date']
+        fields = ['id', 'username', 'email', 'registration_date', 'posts']
+
+    def get_posts(self, user):
+        return [
+            {"id": post.id, "timestamp": post.timestamp, "content": post.content} for post in user.posts.all()
+        ]
