@@ -3,7 +3,15 @@ from .models import *
 
 
 class PostSerializer(serializers.ModelSerializer):
+    author = serializers.SerializerMethodField(read_only=True)
+
     class Meta:
         model = Post
         fields = '__all__'
-        read_only_fields = ['author']
+
+    def get_author(self, obj):
+        return {
+            "id": obj.author.id,
+            "username": obj.author.username,
+            "email": obj.author.email
+        }
