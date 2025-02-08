@@ -62,3 +62,27 @@ class FollowView(generics.GenericAPIView):
 
         Follow.objects.create(user=current_user, followed_user=target_user)
         return Response({'message': f'You are now following {target_user.username}'}, status=status.HTTP_200_OK)
+
+
+class UnfollowView(generics.GenericAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        username = kwargs.get('username')
+        try:
+            target_user = User.objects.get(username=username)
+        except User.DoesNotExist:
+            return Response({'detail': 'User not found.'},status=status.HTTP_404_NOT_FOUND)
+
+        current_user = request.user
+        if current_user == target_user:
+            return Response({'detail': 'You cannot unfollow yourself.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            follow_instance = Follow.objects.get(user=current_user, followed_user=target_user)
+            follow_instance.delete()
+            return Response({"detail": f"You have unfollowed {username}."}, status=status.HTTP_200_OK)
+        except Follow.DoesNotExist:
+            return Response({"detail": "You are not following this user."}, status=status.HTTP_400_BAD_REQUEST)
+
+
