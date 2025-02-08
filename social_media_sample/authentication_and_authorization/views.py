@@ -61,4 +61,4 @@ class FollowView(generics.GenericAPIView):
             )
 
         Follow.objects.create(user=current_user, followed_user=target_user)
-        return Response({'message': f'You are now following {target_user.username}'}, status=status.HTTP_201_CREATED)
+        return Response({'message': f'You are now following {target_user.username}'}, status=status.HTTP_200_OK)
